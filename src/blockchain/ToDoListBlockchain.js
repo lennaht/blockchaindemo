@@ -17,7 +17,11 @@ export default class ToDoListBlockchain extends Blockchain {
         }
     }
     async minePendingActions() {
-        await this.mineBlock(this.pendingActions);
-        this.pendingActions = [];
+        if(this.pendingActions.length > 0) {
+            await this.mineBlock(this.pendingActions);
+            this.pendingActions = [];
+        } else {
+            console.log('Keine Aktionen in der Warteschlange.');            
+        }
     }
 };

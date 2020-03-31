@@ -1,6 +1,7 @@
 export default class Block {
     nonce = 0;
     hash = null;
+    miningDuration = null;
 
     constructor(data, timestamp = Date.now(), previousHash = "", position) {
         this.body = data;
@@ -38,11 +39,13 @@ export default class Block {
     async mine(difficulty) {
         this.nonce = 0;
         console.log('Mining...');
-        console.time('mining');
+        const start = performance.now();
         while (!String(this.hash).startsWith('0'.repeat(difficulty))) {
             this.nonce++;
             this.hash = await this.calculateHash();
         }
-        console.timeEnd('mining');
+        const end = performance.now();
+        console.log(end-start);
+        this.miningDuration = end - start;
     }
 };

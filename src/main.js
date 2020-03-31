@@ -6,7 +6,7 @@ import store from './store';
 Vue.config.productionTip = false;
 
 import ToDoListBlockchain from './blockchain/ToDoListBlockchain';
-Vue.prototype.$chain = new ToDoListBlockchain(3);
+export const chain = new ToDoListBlockchain(3);
 
 new Vue({
     router,
