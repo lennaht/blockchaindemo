@@ -16,7 +16,7 @@ export default class ListAction {
             this.id = id;
         }
 
-        if(action === actions[0]) {
+        if(action === actions[0] && !id) {
             this.id = uuid();
         }
 

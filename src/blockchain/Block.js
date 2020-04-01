@@ -48,4 +48,12 @@ export default class Block {
         console.log(end-start);
         this.miningDuration = end - start;
     }
+
+    // Zum Replizieren von Block Instanzen, da diese nach JSON konvertierung einfache Objekte werden
+    assign(obj) { 
+        console.log(obj)
+        for(let prop in obj) {
+            this[prop] = obj[prop];
+        }
+    }
 };

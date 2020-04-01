@@ -9,7 +9,7 @@
         </div>
       </div>
       <p>Unverifizierte Aktionen: {{ pendingActions }}</p>
-      <button class="btn-primary btn" @click="mine" :disabled="pendingActions < 1">
+      <button class="btn-primary btn" @click="mine" :disabled="pendingActions < 1 || mining">
         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" v-if="mining"></span>
         {{ mining ? 'Minen...' : 'Mine'}}
       </button>
