@@ -52,8 +52,10 @@ export default {
       this.pendingActions = chain.pendingActions.length;
     },
     deleteItem(event) {
-      chain.addPendingAction('DELETE', event.target.id);
-      this.pendingActions = chain.pendingActions.length;
+      if(!chain.pendingActions.some(action => action.action === 'DELETE' && action.id === event.target.id)) {
+        chain.addPendingAction('DELETE', event.target.id);
+        this.pendingActions = chain.pendingActions.length;
+      }
     },
     async mine() {
       this.mining = true;
