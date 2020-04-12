@@ -1,6 +1,6 @@
 <template>
   <div class="blockchain">
-    <button @click="validate" class="btn btn-primary">
+    <button @click="validate" :disabled="validating" class="btn btn-primary">
         <span v-if="validating" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
         {{ validating ? 'Verifizieren...' : 'Verifizieren'}}
     </button>
@@ -11,8 +11,18 @@
         </span>
     </p>
     <br>
-    <button @click="saveChanges" :disabled="!changes" class="btn btn-danger">Speichern</button>
-    <button @click="reloadJSON" :disabled="!changes" class="btn btn-secondary">Verwerfen</button>
+    <div class="btn-toolbar" role="toolbar" aria-label="Blockchain bearbeiten">
+        <div class="btn-group mr-2" role="group">
+            <button @click="saveChanges" :disabled="!changes" class="btn btn-danger">Speichern</button>
+            <button @click="reloadJSON" :disabled="!changes" class="btn btn-secondary">Verwerfen</button>
+        </div>
+        <div class="btn-group mr-2" role="group">
+            <button @click="manipulate" class="btn btn-danger float right" :disabled="manipulating">
+                <span v-if="manipulating" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                {{ manipulating ? 'Mine Block '+String(manipulationState+1) : 'Manipulieren' }}
+            </button>
+        </div>
+    </div>
     <p v-if="!validJSON" id="validityWarning">Kein valides JSON</p>
     <prism-editor v-model="chainString" language="js"></prism-editor>
   </div>
@@ -37,7 +47,9 @@ export default {
             valid: true,
             validating: false,
             validJSON: true,
-            changes: false
+            changes: false,
+            manipulating: false,
+            manipulationState: 0
         };
     },
     methods: {
@@ -79,6 +91,26 @@ export default {
             }
             this.reloadJSON();
             await this.validate();
+        },
+        async manipulate() {
+            const that = this;
+
+            if(chain.length < 2) return;
+
+            this.manipulating = true;
+            for(const block of chain.chain) {
+                block.hash = null;
+                that.manipulationState = block.position;
+                block.previousHash = block.position > 0 ? chain.chain[block.position-1].hash : '';
+                console.log(block.previousHash);
+                console.log(chain.chain[block.position-1]);
+                
+                await block.mine(chain.difficulty);
+            };
+            this.manipulating = false;
+            this.reloadJSON();
+            await this.validate();
+
         },
         validateJSON(string) {
             try {
